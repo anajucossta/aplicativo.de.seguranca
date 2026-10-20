@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segurança Digital para Terceira Idade - Guia Prático</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
+        
+        /* Configurações de navegação e tipografia base */
+        html {
+            font-size: 18px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.8;
+            background-color: #f4f6f8;
+            color: #111111;
+        }
+
+        /* Destaque para navegação por teclado e acessibilidade */
+        *:focus-visible {
+            outline: 4px solid #FFC857 !important;
+            outline-offset: 4px !important;
+        }
+
+        /* Botões grandes para facilitar o toque e clique */
+        .botao-grande {
+            min-height: 56px;
+            min-width: 56px;
+            padding: 16px 24px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .botao-grande:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Controles de tamanho de fonte via CSS puro */
+        #tamanho-fonte-normal:checked ~ main { font-size: 1rem; }
+        #tamanho-fonte-grande:checked ~ main { font-size: 1.25rem; }
+        #tamanho-fonte-gigante:checked ~ main { font-size: 1.5rem; }
+
+        /* Alternador de Alto Contraste via CSS puro */
+        #alternar-contraste:checked ~ main,
+        #alternar-contraste:checked ~ header,
+        #alternar-contraste:checked ~ footer {
+            background-color: #000000 !important;
+            color: #FFFFFF !important;
+        }
+
+        #alternar-contraste:checked ~ main .cartao-conteudo,
+        #alternar-contraste:checked ~ main .bg-white,
+        #alternar-contraste:checked ~ main .bg-gray-50,
+        #alternar-contraste:checked ~ main .bg-amber-50 {
+            background-color: #121212 !important;
+            border: 3px solid #FFFF00 !important;
+            color: #FFFFFF !important;
+        }
+
+        #alternar-contraste:checked ~ main .text-gray-700,
+        #alternar-contraste:checked ~ main .text-gray-800,
+        #alternar-contraste:checked ~ main .text-gray-900,
+        #alternar-contraste:checked ~ main p,
+        #alternar-contraste:checked ~ main h2,
+        #alternar-contraste:checked ~ main h3 {
+            color: #FFFFFF !important;
+        }
+
+        #alternar-contraste:checked ~ main .texto-destaque-amarelo {
+            color: #FFFF00 !important;
+        }
+
+        #alternar-contraste:checked ~ header {
+            border-bottom: 4px solid #FFFF00 !important;
+        }
+
+        /* Estilização dos botões de ajuste de fonte */
+        .rotulo-fonte {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #FFFFFF;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        #tamanho-fonte-normal:checked ~ header label[for="tamanho-fonte-normal"],
+        #tamanho-fonte-grande:checked ~ header label[for="tamanho-fonte-grande"],
+        #tamanho-fonte-gigante:checked ~ header label[for="tamanho-fonte-gigante"] {
+            background-color: #FFC857;
+            color: #000000;
+            border-color: #FFFFFF;
+        }
+
+        .rotulo-contraste {
+            background-color: #FFFFFF;
+            color: #011627;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 44px;
+        }
+
+        #alternar-contraste:checked ~ header label[for="alternar-contraste"] {
+            background-color: #FFFF00;
+            color: #000000;
+        }
+
+        /* Estilização de cartões expansíveis */
+        .cartao-detalhes summary {
+            list-style: none;
+            cursor: pointer;
+        }
+        .cartao-detalhes summary::-webkit-details-marker {
+            display: none;
+        }
+
+        /* Controle do Simulador/Quiz em CSS Puro */
+        .opcao-simulador {
+            display: none;
+        }
+
+        #resposta-errada:checked ~ .resposta-feedback-errado {
+            display: block;
+        }
+
+        #resposta-certa:checked ~ .resposta-feedback-certo {
+            display: block;
+        }
+
+        /* Controle dos Filtros por Categoria em CSS Puro */
+        #filtro-todas:checked ~ main .cartao-dica { display: flex; }
+        
+        #filtro-golpes:checked ~ main .cartao-dica[data-categoria="golpes"] { display: flex; }
+        #filtro-golpes:checked ~ main .cartao-dica:not([data-categoria="golpes"]) { display: none; }
+
+        #filtro-senhas:checked ~ main .cartao-dica[data-categoria="senhas"] { display: flex; }
+        #filtro-senhas:checked ~ main .cartao-dica:not([data-categoria="senhas"]) { display: none; }
+
+        /* Destaque nos botões de filtro selecionados */
+        #filtro-todas:checked ~ main label[for="filtro-todas"],
+        #filtro-golpes:checked ~ main label[for="filtro-golpes"],
+        #filtro-senhas:checked ~ main label[for="filtro-senhas"] {
+            background-color: #011627 !important;
+            color: #FFFFFF !important;
+            border-color: #FFC857 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col">
+
+    <input type="radio" id="tamanho-fonte-normal" name="tamanho-fonte" class="hidden" checked>
+    <input type="radio" id="tamanho-fonte-grande" name="tamanho-fonte" class="hidden">
+    <input type="radio" id="tamanho-fonte-gigante" name="tamanho-fonte" class="hidden">
+
+    <input type="checkbox" id="alternar-contraste" class="hidden">
+
+    <input type="radio" id="filtro-todas" name="filtro-categoria" class="hidden" checked>
+    <input type="radio" id="filtro-golpes" name="filtro-categoria" class="hidden">
+    <input type="radio" id="filtro-senhas" name="filtro-categoria" class="hidden">
+
+    <!-- Atalho de acessibilidade para pular direto ao conteúdo -->
+    <a href="#conteudo-principal" class="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-yellow-400 focus:text-black focus:z-50 focus:top-0 focus:left-0 text-xl font-bold">
+        Ir para o conteúdo principal
+    </a>
+
+    <header class="bg-[#011627] text-white sticky top-0 z-40 border-b-4 border-[#FFC857] shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+            
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-shield-halved text-[#FFC857] text-3xl sm:text-4xl" aria-hidden="true"></i>
+                <h1 class="text-xl sm:text-2xl font-extrabold tracking-wide">
+                    Segurança<span class="text-[#FFC857]">Digital</span>
+                </h1>
+            </div>
+
+            <!-- Painel de Controles de Acessibilidade -->
+            <div class="flex flex-wrap items-center gap-2 sm:gap-4" role="region" aria-label="Controles de Acessibilidade">
+                
+                <div class="flex items-center bg-white/10 rounded-lg p-1 border border-white/20 gap-1">
+                    <span class="text-sm font-bold text-[#FFC857] px-2">Texto:</span>
+                    <label for="tamanho-fonte-normal" class="rotulo-fonte" title="Tamanho de Fonte Normal">A</label>
+                    <label for="tamanho-fonte-grande" class="rotulo-fonte text-lg" title="Tamanho de Fonte Grande">A+</label>
+                    <label for="tamanho-fonte-gigante" class="rotulo-fonte text-xl" title="Tamanho de Fonte Gigante">A++</label>
+                </div>
+
+                <label for="alternar-contraste" class="rotulo-contraste">
+                    <i class="fa-solid fa-circle-half-stroke text-xl" aria-hidden="true"></i>
+                    <span class="text-base">Alto Contraste</span>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main id="conteudo-principal" class="flex-grow max-w-6xl w-full mx-auto px-4 py-6 sm:py-10">
+        
+        <section class="cartao-conteudo bg-[#0B4F6C] text-white rounded-2xl p-6 sm:p-8 mb-8 shadow-xl relative overflow-hidden border-l-8 border-[#FFC857]">
+            <div class="max-w-3xl">
+                <span class="inline-block bg-[#FFC857] text-[#011627] font-extrabold text-sm sm:text-base px-3 py-1 rounded-full mb-3">
+                    <i class="fa-solid fa-heart mr-1" aria-hidden="true"></i> Espaço Seguro para Você
+                </span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold mb-4 leading-tight">
+                    Aprenda a navegar na internet de forma simples, tranquila e segura.
+                </h2>
+                <p class="text-lg sm:text-xl text-gray-100 mb-6 leading-relaxed">
+                    A tecnologia existe para facilitar a sua rotina. Veja abaixo nossas dicas práticas para se proteger de golpes e usar seu celular com toda tranquilidade!
+                </p>
+                <a href="#secao-dicas" class="botao-grande bg-[#FFC857] text-[#011627] hover:bg-yellow-300 font-extrabold">
+                    <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+                    <span>Ver Dicas de Segurança</span>
+                </a>
+            </div>
+        </section>
+
+        <nav aria-label="Filtros de Categorias" class="mb-10">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <label for="filtro-todas" class="botao-grande bg-white text-[#011627] border-2 border-gray-300 text-center justify-center">
+                    <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+                    <span>Todas as Dicas</span>
+                </label>
+                <label for="filtro-golpes" class="botao-grande bg-white text-[#011627] border-2 border-gray-300 text-center justify-center">
+                    <i class="fa-solid fa-triangle-exclamation text-red-600" aria-hidden="true"></i>
+                    <span>Evitar Golpes</span>
+                </label>
+                <label for="filtro-senhas" class="botao-grande bg-white text-[#011627] border-2 border-gray-300 text-center justify-center">
+                    <i class="fa-solid fa-key text-yellow-600" aria-hidden="true"></i>
+                    <span>Senhas Seguras</span>
+                </label>
+            </div>
+        </nav>
+
+        <section id="secao-dicas" aria-labelledby="titulo-dicas" class="mb-12">
+            <h2 id="titulo-dicas" class="text-2xl sm:text-3xl font-extrabold mb-6 flex items-center gap-3">
+                <i class="fa-solid fa-lightbulb text-[#FFC857]" aria-hidden="true"></i>
+                <span>Dicas Essenciais de Segurança</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="lista-dicas">
+                
+                <!-- Dica 1 -->
+                <article class="cartao-dica cartao-conteudo bg-white p-6 rounded-2xl shadow-md border-2 border-gray-200 flex flex-col justify-between" data-categoria="golpes">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-green-100 text-green-700 flex items-center justify-center text-2xl font-bold" aria-hidden="true">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Mensagens no WhatsApp</h3>
+                        </div>
+                        <p class="text-lg text-gray-700 mb-4 leading-relaxed">
+                            Se um parente ou amigo pedir dinheiro por um número novo no WhatsApp, <strong>mantenha a calma!</strong> Ligue para o número antigo da pessoa para confirmar antes de enviar qualquer valor.
+                        </p>
+                    </div>
+
+                    <details class="cartao-detalhes mt-2">
+                        <summary class="botao-grande bg-blue-50 text-[#0B4F6C] border-2 border-[#0B4F6C] hover:bg-[#0B4F6C] hover:text-white w-full">
+                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                            <span>Como se proteger</span>
+                        </summary>
+                        <div class="mt-4 p-4 bg-yellow-50 border-l-4 border-[#FFC857] rounded-r-xl text-gray-800 space-y-2">
+                            <p class="font-bold text-yellow-900">
+                                <i class="fa-solid fa-triangle-exclamation mr-1" aria-hidden="true"></i> Regra de Ouro:
+                            </p>
+                            <p>Golpistas conseguem fotos públicas na internet para criar perfis falsos. Sempre faça uma ligação de voz tradicional para o número antigo do familiar para tirar a dúvida!</p>
+                        </div>
+                    </details>
+                </article>
+
+                <!-- Dica 2 -->
+                <article class="cartao-dica cartao-conteudo bg-white p-6 rounded-2xl shadow-md border-2 border-gray-200 flex flex-col justify-between" data-categoria="senhas">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-yellow-100 text-yellow-800 flex items-center justify-center text-2xl font-bold" aria-hidden="true">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Criação de Senhas Fortes</h3>
+                        </div>
+                        <p class="text-lg text-gray-700 mb-4 leading-relaxed">
+                            Evite datas de nascimento ou sequências óbvias como "123456". O melhor é juntar palavras simples com números e símbolos.
+                        </p>
+                    </div>
+
+                    <details class="cartao-detalhes mt-2">
+                        <summary class="botao-grande bg-blue-50 text-[#0B4F6C] border-2 border-[#0B4F6C] hover:bg-[#0B4F6C] hover:text-white w-full">
+                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                            <span>Exemplo de senha segura</span>
+                        </summary>
+                        <div class="mt-4 p-4 bg-green-50 border-l-4 border-green-600 rounded-r-xl text-gray-800 space-y-2">
+                            <p class="font-bold text-green-900">Exemplo Recomendado:</p>
+                            <p class="font-mono text-xl text-green-800 font-bold bg-white p-2 rounded border border-green-300 inline-block">
+                                Cafedamanha@2026
+                            </p>
+                            <p>Essa senha combina uma palavra do seu dia a dia, um símbolo (@) e um ano. É fácil de lembrar e muito segura!</p>
+                        </div>
+                    </details>
+                </article>
+
+                <!-- Dica 3 -->
+                <article class="cartao-dica cartao-conteudo bg-white p-6 rounded-2xl shadow-md border-2 border-gray-200 flex flex-col justify-between" data-categoria="golpes">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-2xl font-bold" aria-hidden="true">
+                                <i class="fa-solid fa-phone-slash"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Ligações Falsas de Bancos</h3>
+                        </div>
+                        <p class="text-lg text-gray-700 mb-4 leading-relaxed">
+                            Nenhum banco liga pedindo para você digitar sua senha ou fazer um PIX para "cancelar" uma transferência. Se receber essa ligação, desligue imediatamente.
+                        </p>
+                    </div>
+
+                    <details class="cartao-detalhes mt-2">
+                        <summary class="botao-grande bg-blue-50 text-[#0B4F6C] border-2 border-[#0B4F6C] hover:bg-[#0B4F6C] hover:text-white w-full">
+                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                            <span>O que fazer se ligarem</span>
+                        </summary>
+                        <div class="mt-4 p-4 bg-red-50 border-l-4 border-red-600 rounded-r-xl text-gray-800 space-y-2">
+                            <p class="font-bold text-red-900">Passos de Segurança:</p>
+                            <p>1. Desligue o telefone na hora.<br>2. Procure o número de atendimento impresso no verso do seu cartão bancário.<br>3. Ligue para o número oficial caso deseje verificar algo.</p>
+                        </div>
+                    </details>
+                </article>
+
+                <!-- Dica 4 -->
+                <article class="cartao-dica cartao-conteudo bg-white p-6 rounded-2xl shadow-md border-2 border-gray-200 flex flex-col justify-between" data-categoria="golpes">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-2xl font-bold" aria-hidden="true">
+                                <i class="fa-solid fa-qrcode"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Conferência no PIX</h3>
+                        </div>
+                        <p class="text-lg text-gray-700 mb-4 leading-relaxed">
+                            Antes de digitar sua senha para confirmar uma transferência PIX, leia com atenção o <strong>nome do destinatário</strong> que aparece na tela do aplicativo do banco.
+                        </p>
+                    </div>
+
+                    <details class="cartao-detalhes mt-2">
+                        <summary class="botao-grande bg-blue-50 text-[#0B4F6C] border-2 border-[#0B4F6C] hover:bg-[#0B4F6C] hover:text-white w-full">
+                            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                            <span>Passo a passo seguro</span>
+                        </summary>
+                        <div class="mt-4 p-4 bg-purple-50 border-l-4 border-purple-600 rounded-r-xl text-gray-800 space-y-2">
+                            <p class="font-bold text-purple-900">Atenção aos Detalhes:</p>
+                            <p>Confira nome, sobrenome e banco de quem vai receber. Se o nome que estiver na tela não for exatamente da pessoa ou empresa esperada, cancele o envio.</p>
+                        </div>
+                    </details>
+                </article>
+
+            </div>
+        </section>
+
+        <section class="cartao-conteudo bg-amber-50 rounded-2xl p-6 sm:p-8 border-4 border-[#FFC857] mb-12 shadow-md" aria-labelledby="titulo-simulador">
+            <div class="max-w-3xl mx-auto">
+                <div class="flex items-center gap-3 mb-4">
+                    <i class="fa-solid fa-graduation-cap text-3xl sm:text-4xl text-[#0B4F6C]" aria-hidden="true"></i>
+                    <h2 id="titulo-simulador" class="text-2xl sm:text-3xl font-extrabold">
+                        Treinamento de Prática
+                    </h2>
+                </div>
+                <p class="text-lg sm:text-xl text-gray-800 mb-6">
+                    Leia a mensagem abaixo recebida no celular. O que você faria? Ela é <strong>Verdadeira</strong> ou é um <strong>Golpe</strong>?
+                </p>
+
+                <div class="bg-white p-6 rounded-xl border-2 border-gray-300 shadow-inner mb-6">
+                    <div class="flex items-center gap-2 text-sm text-gray-500 font-bold mb-2">
+                        <i class="fa-regular fa-envelope" aria-hidden="true"></i> Exemplo de Mensagem Recebida:
+                    </div>
+                    <p class="text-xl font-mono text-gray-800 bg-gray-100 p-4 rounded-lg border border-gray-300">
+                        "URGENTE: Seu cartão foi bloqueado por segurança! Para desbloquear agora acesse o endereço: www.banco-desbloqueio-seguro.com"
+                    </p>
+                </div>
+
+                <input type="radio" id="resposta-errada" name="resposta-simulador" class="opcao-simulador">
+                <input type="radio" id="resposta-certa" name="resposta-simulador" class="opcao-simulador">
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <label for="resposta-certa" class="botao-grande bg-red-600 text-white hover:bg-red-700 min-w-[200px] text-center">
+                        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                        <span>É um Golpe!</span>
+                    </label>
+                    <label for="resposta-errada" class="botao-grande bg-green-600 text-white hover:bg-green-700 min-w-[200px] text-center">
+                        <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                        <span>É Verdadeiro</span>
+                    </label>
+                </div>
+
+                <div class="resposta-feedback-certo hidden mt-6 p-4 rounded-xl text-xl font-bold bg-green-200 text-green-900 border-2 border-green-600 text-center" role="alert">
+                    <i class="fa-solid fa-circle-check text-green-700 mr-2" aria-hidden="true"></i> PARABÉNS! Você acertou. Bancos de verdade não enviam links por SMS pedindo atualização emergencial de dados.
+                </div>
+
+                <div class="resposta-feedback-errado hidden mt-6 p-4 rounded-xl text-xl font-bold bg-red-200 text-red-900 border-2 border-red-600 text-center" role="alert">
+                    <i class="fa-solid fa-circle-xmark text-red-700 mr-2" aria-hidden="true"></i> ATENÇÃO! Trata-se de um golpe. Mensagens com links urgentes e alarmantes servem para roubar dados pessoais.
+                </div>
+            </div>
+        </section>
+
+        <section class="cartao-conteudo bg-white p-6 sm:p-8 rounded-2xl shadow-md border-2 border-gray-200" aria-labelledby="titulo-telefones">
+            <h2 id="titulo-telefones" class="text-2xl font-extrabold mb-4 flex items-center gap-3">
+                <i class="fa-solid fa-phone-volume text-green-600" aria-hidden="true"></i>
+                <span>Telefones Úteis e Canais de Ajuda</span>
+            </h2>
+            <p class="text-lg text-gray-700 mb-6">
+                Caso suspeite de algum golpe ou necessite de orientação imediata, utilize os serviços oficiais:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <h3 class="text-lg font-bold">Polícia Militar / Emergência</h3>
+                    <p class="text-2xl font-extrabold text-[#0B4F6C] mt-1">
+                        <a href="tel:190" class="hover:underline">Ligue 190</a>
+                    </p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <h3 class="text-lg font-bold">Central de Direitos Humanos</h3>
+                    <p class="text-2xl font-extrabold text-[#0B4F6C] mt-1">
+                        <a href="tel:100" class="hover:underline">Ligue 100</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
